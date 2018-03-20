@@ -249,7 +249,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ntripping_SOURCES = ntrip_ping.c
-ntripping_LDFLAGS = -lcurl
+ntripping_LDFLAGS = -lcurl -lm
 skylarkping_SOURCES = skylark_ping.c
 skylarkping_LDFLAGS = -lcurl
 all: all-am
