@@ -1,8 +1,11 @@
+#include <config.h>
+
 #include <getopt.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <curl/curl.h>
 
