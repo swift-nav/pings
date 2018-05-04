@@ -285,7 +285,7 @@ int upload_request(void)
   curl_easy_setopt(curl, CURLOPT_PUT,              1L);
   curl_easy_setopt(curl, CURLOPT_READFUNCTION,     upload);
   curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, progress);
-  curl_easy_setopt(curl, CURLOPT_NOPROGRESS,       1L);
+  curl_easy_setopt(curl, CURLOPT_NOPROGRESS,       0L);
 
   code = curl_easy_perform(curl);
   if (code != CURLE_OK) {

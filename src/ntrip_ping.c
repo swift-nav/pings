@@ -92,7 +92,6 @@ size_t upload(char *buf, size_t size, size_t n, void *data)
   time_t now = time(NULL);
   if (now - last > 10) {
     last = now;
-
     double latf = atof(lat);
     double lonf = atof(lon);
     double heightf = atof(height);
@@ -160,6 +159,7 @@ int request(void)
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,    download);
   curl_easy_setopt(curl, CURLOPT_READFUNCTION,     upload);
   curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, progress);
+  curl_easy_setopt(curl, CURLOPT_NOPROGRESS,       0L);
   curl_easy_setopt(curl, CURLOPT_PUT,              1L);
   curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST,    "GET");
 
