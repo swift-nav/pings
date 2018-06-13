@@ -5,6 +5,15 @@
 Collection of networking ping utilities for monitoring NTRIP and Skylark. These
 utilities use the same libraries and mechanisms as the Piksis.
 
+## Dependencies
+
+libcurl is needed to compile these utilities.
+
+### Ubuntu
+
+Install libcurl with:
+    sudo apt install libcurl4-openssl-dev
+
 ## Installation
 
 Ping utilities can be installed on multiple platforms with:
