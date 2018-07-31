@@ -1,7 +1,10 @@
+#include <config.h>
+
 #include <getopt.h>
 #include <inttypes.h>
 #include <math.h>
 #include <stdlib.h>
+
 #include <curl/curl.h>
 
 char *url = "http://swiftnav:demo@ntrip.swiftnav.com:2102/RTCM3_SWFT";

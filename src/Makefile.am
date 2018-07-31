@@ -1,9 +1,8 @@
-bin_PROGRAMS=ntripping skylarkping
+bin_PROGRAMS = ntripping skylarkping
 
-ntripping_SOURCES=ntrip_ping.c
+ntripping_SOURCES = ntrip_ping.c
+ntripping_LDADD = -lm ${LIBCURL}
+ntripping_CPPFLAGS = ${LIBCURL_CPPFLAGS}
 
-ntripping_LDFLAGS=-lcurl -lm
-
-skylarkping_SOURCES=skylark_ping.c
-
-skylarkping_LDFLAGS=-lcurl
+skylarkping_SOURCES = skylark_ping.c
+skylarkping_LDADD = ${LIBCURL}
