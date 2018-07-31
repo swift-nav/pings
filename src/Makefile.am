@@ -2,8 +2,8 @@ bin_PROGRAMS=ntripping skylarkping
 
 ntripping_SOURCES=ntrip_ping.c
 
-ntripping_LDFLAGS=-lcurl -lm
+ntripping_LDADD=-lcurl -lm
 
 skylarkping_SOURCES=skylark_ping.c
 
-skylarkping_LDFLAGS=-lcurl
+skylarkping_LDADD=-lcurl

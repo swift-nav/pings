@@ -100,14 +100,10 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_ntripping_OBJECTS = ntrip_ping.$(OBJEXT)
 ntripping_OBJECTS = $(am_ntripping_OBJECTS)
-ntripping_LDADD = $(LDADD)
-ntripping_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(ntripping_LDFLAGS) \
-	$(LDFLAGS) -o $@
+ntripping_DEPENDENCIES =
 am_skylarkping_OBJECTS = skylark_ping.$(OBJEXT)
 skylarkping_OBJECTS = $(am_skylarkping_OBJECTS)
-skylarkping_LDADD = $(LDADD)
-skylarkping_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(skylarkping_LDFLAGS) $(LDFLAGS) -o $@
+skylarkping_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -240,6 +236,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -249,9 +246,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ntripping_SOURCES = ntrip_ping.c
-ntripping_LDFLAGS = -lcurl -lm
+ntripping_LDADD = -lcurl -lm
 skylarkping_SOURCES = skylark_ping.c
-skylarkping_LDFLAGS = -lcurl
+skylarkping_LDADD = -lcurl
 all: all-am
 
 .SUFFIXES:
@@ -330,11 +327,11 @@ clean-binPROGRAMS:
 
 ntripping$(EXEEXT): $(ntripping_OBJECTS) $(ntripping_DEPENDENCIES) $(EXTRA_ntripping_DEPENDENCIES) 
 	@rm -f ntripping$(EXEEXT)
-	$(AM_V_CCLD)$(ntripping_LINK) $(ntripping_OBJECTS) $(ntripping_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(ntripping_OBJECTS) $(ntripping_LDADD) $(LIBS)
 
 skylarkping$(EXEEXT): $(skylarkping_OBJECTS) $(skylarkping_DEPENDENCIES) $(EXTRA_skylarkping_DEPENDENCIES) 
 	@rm -f skylarkping$(EXEEXT)
-	$(AM_V_CCLD)$(skylarkping_LINK) $(skylarkping_OBJECTS) $(skylarkping_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(skylarkping_OBJECTS) $(skylarkping_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
