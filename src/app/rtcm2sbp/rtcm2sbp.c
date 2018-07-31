@@ -8,7 +8,6 @@
 #include "lsn_common.h"
 #include "lsn_edc.h"
 #include "lsn_fifo.h"
-#include "parsers.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -166,7 +165,7 @@ int main(int argc, char *argv[]) {
       break;
     }
     if (read_sz == 0) {
-      usleep(1000);
+      usleep(10000);
       continue;
     }
     // fprintf(stderr, "read %u Bytes\n", read_sz);
@@ -178,12 +177,14 @@ int main(int argc, char *argv[]) {
       // FIFO full???
     }
 
-    /* peek available data from FIFO */
-    u32 num_rd = fifo_peek(&tmp_fifo, rtcm_buff, BUFSZ);
+    u32 num_rd = fifo_length(&tmp_fifo);
     if (num_rd < 7) {
       // not enough data in the FIFO yet
       continue;
     }
+
+    /* peek available data from FIFO */
+    num_rd = fifo_peek(&tmp_fifo, rtcm_buff, BUFSZ);
 
     /* Parse as much as possible */
     u32 rd_pt = 0;
@@ -223,13 +224,10 @@ int main(int argc, char *argv[]) {
     }
 
     /* removed parsed from FIFO */
-    fifo_remove(&tmp_fifo, rd_pt);
-    // if (rd_pt > 0) {
-    //   fprintf(stderr,
-    //           "removed %d, fifo_length %d\n",
-    //           rd_pt,
-    //           fifo_length(&tmp_fifo));
-    // }
+    u32 num_rm = fifo_remove(&tmp_fifo, rd_pt);
+    if (num_rm < rd_pt) {
+      fprintf(stderr, "only removed %u out of %u\n", num_rm, rd_pt);
+    }
   }
 
 CLEANUP:
