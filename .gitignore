@@ -8,3 +8,11 @@ src/Makefile
 src/ntripping
 src/skylarkping
 *~
+Makefile.in
+aclocal.m4
+compile
+configure
+depcomp
+install-sh
+missing
+src/Makefile.in

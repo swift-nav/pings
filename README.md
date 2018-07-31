@@ -5,10 +5,14 @@
 Collection of networking ping utilities for monitoring NTRIP and Skylark. These
 utilities use the same libraries and mechanisms as the Piksis.
 
-## Installation
+## Build and Installation
+
+Building these utilities requires autoconf and automake.  On ubuntu, these packages are eponymous.
+libcurl is also required; libcurl4-gnutls-dev is the Swift recommened package on Ubuntu.  
 
 Ping utilities can be installed on multiple platforms with:
 
+    autoreconf --install
     ./configure
     make
     make install
