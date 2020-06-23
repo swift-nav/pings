@@ -167,6 +167,9 @@ int request(void)
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS,       0L);
   curl_easy_setopt(curl, CURLOPT_PUT,              1L);
   curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST,    "GET");
+#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR >= 7 && LIBCURL_VERSION_MINOR >= 64)
+  curl_easy_setopt(curl, CURLOPT_HTTP09_ALLOWED,   1L);
+#endif
 
   code = curl_easy_perform(curl);
   if (code != CURLE_OK) {
