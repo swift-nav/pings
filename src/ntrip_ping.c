@@ -38,7 +38,7 @@ int parse_options(int argc, char *argv[])
     {"lon",       required_argument, NULL, OPT_LON},
     {"height",    required_argument, NULL, OPT_HEIGHT},
     {"client-id", required_argument, NULL, OPT_CLIENT_ID},
-    {NULL,     0,                 NULL, 0},
+    {NULL,        0,                 NULL, 0},
   };
 
   int opt;
@@ -160,9 +160,8 @@ int request(void)
     return -1;
   }
 
-  size_t client_id_nbytes = snprintf(NULL, 0, "X-SwiftNav-Client-Id: %s", client_id) + 1; /* +1 for the \0 */
-  char *client_id_header = malloc(client_id_nbytes);
-  snprintf(client_id_header, client_id_nbytes, "X-SwiftNav-Client-Id: %s", client_id);
+  char client_id_header[1024];
+  sprintf(client_id_header, "X-SwiftNav-Client-Id: %s", client_id);
 
   struct curl_slist *chunk = NULL;
   chunk = curl_slist_append(chunk, "Transfer-Encoding:");
