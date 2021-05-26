@@ -9,6 +9,7 @@ char *url = "conus.swiftnav.com:2101/VRS";
 char *lat = "37.77101999622968";
 char *lon = "-122.40315159140708";
 char *height = "-5.549358852471994";
+char *client_id = "00000000-0000-0000-0000-000000000000";
 
 void usage(char *command)
 {
@@ -18,6 +19,7 @@ void usage(char *command)
   puts("\t--lat    <latitude>");
   puts("\t--lon    <longitude>");
   puts("\t--height <height>");
+  puts("\t--client-id <X-SwiftNav-Client-Id http header>");
 }
 
 int parse_options(int argc, char *argv[])
@@ -27,14 +29,16 @@ int parse_options(int argc, char *argv[])
     OPT_LAT,
     OPT_LON,
     OPT_HEIGHT,
+    OPT_CLIENT_ID,
   };
 
   struct option long_opts[] = {
-    {"url",    required_argument, NULL, OPT_URL},
-    {"lat",    required_argument, NULL, OPT_LAT},
-    {"lon",    required_argument, NULL, OPT_LON},
-    {"height", required_argument, NULL, OPT_HEIGHT},
-    {NULL,     0,                 NULL, 0},
+    {"url",       required_argument, NULL, OPT_URL},
+    {"lat",       required_argument, NULL, OPT_LAT},
+    {"lon",       required_argument, NULL, OPT_LON},
+    {"height",    required_argument, NULL, OPT_HEIGHT},
+    {"client-id", required_argument, NULL, OPT_CLIENT_ID},
+    {NULL,        0,                 NULL, 0},
   };
 
   int opt;
@@ -54,6 +58,10 @@ int parse_options(int argc, char *argv[])
       break;
       case OPT_HEIGHT: {
         height = optarg;
+      }
+      break;
+      case OPT_CLIENT_ID: {
+        client_id = optarg;
       }
       break;
       default: {
@@ -152,9 +160,13 @@ int request(void)
     return -1;
   }
 
+  char client_id_header[1024];
+  sprintf(client_id_header, "X-SwiftNav-Client-Id: %s", client_id);
+
   struct curl_slist *chunk = NULL;
   chunk = curl_slist_append(chunk, "Transfer-Encoding:");
   chunk = curl_slist_append(chunk, "Ntrip-Version: Ntrip/2.0");
+  chunk = curl_slist_append(chunk, client_id_header);
 
   char error_buf[CURL_ERROR_SIZE];
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER,       chunk);
