@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <curl/curl.h>
 
@@ -9,17 +10,19 @@ char *url = "conus.swiftnav.com:2101/VRS";
 char *lat = "37.77101999622968";
 char *lon = "-122.40315159140708";
 char *height = "-5.549358852471994";
-char *client_id = "00000000-0000-0000-0000-000000000000";
+char *epoch = "";
+char *client = "00000000-0000-0000-0000-000000000000";
 
 void usage(char *command)
 {
   printf("Usage: %s\n", command);
   puts("\nMain options");
-  puts("\t--url    <url>");
-  puts("\t--lat    <latitude>");
-  puts("\t--lon    <longitude>");
-  puts("\t--height <height>");
-  puts("\t--client-id <X-SwiftNav-Client-Id http header>");
+  puts("\t--url     <url>");
+  puts("\t--lat     <latitude>");
+  puts("\t--lon     <longitude>");
+  puts("\t--height  <height>");
+  puts("\t--epoch    <epoch>");
+  puts("\t--client  <X-SwiftNav-Client-Id header>");
 }
 
 int parse_options(int argc, char *argv[])
@@ -29,16 +32,18 @@ int parse_options(int argc, char *argv[])
     OPT_LAT,
     OPT_LON,
     OPT_HEIGHT,
-    OPT_CLIENT_ID,
+    OPT_EPOCH,
+    OPT_CLIENT,
   };
 
   struct option long_opts[] = {
-    {"url",       required_argument, NULL, OPT_URL},
-    {"lat",       required_argument, NULL, OPT_LAT},
-    {"lon",       required_argument, NULL, OPT_LON},
-    {"height",    required_argument, NULL, OPT_HEIGHT},
-    {"client-id", required_argument, NULL, OPT_CLIENT_ID},
-    {NULL,        0,                 NULL, 0},
+    {"url",     required_argument, NULL, OPT_URL},
+    {"lat",     required_argument, NULL, OPT_LAT},
+    {"lon",     required_argument, NULL, OPT_LON},
+    {"height",  required_argument, NULL, OPT_HEIGHT},
+    {"epoch",   required_argument, NULL, OPT_EPOCH},
+    {"client",  required_argument, NULL, OPT_CLIENT},
+    {NULL,      0,                 NULL, 0},
   };
 
   int opt;
@@ -60,8 +65,12 @@ int parse_options(int argc, char *argv[])
         height = optarg;
       }
       break;
-      case OPT_CLIENT_ID: {
-        client_id = optarg;
+      case OPT_EPOCH: {
+        epoch = optarg;
+      }
+      break;
+      case OPT_CLIENT: {
+        client = optarg;
       }
       break;
       default: {
@@ -117,6 +126,10 @@ size_t upload(char *buf, size_t size, size_t n, void *data)
     char lat_dir = latf < 0.0 ? 'S' : 'N';
     char lon_dir = lonf < 0.0 ? 'W' : 'E';
 
+    if (strlen(epoch) != 0) {
+      now = atoi(epoch);
+    }
+
     struct tm *time = gmtime(&now);
     char time_buf [80];
     strftime(time_buf, 80, "%H%M%S.00", time);
@@ -160,13 +173,13 @@ int request(void)
     return -1;
   }
 
-  char client_id_header[1024];
-  sprintf(client_id_header, "X-SwiftNav-Client-Id: %s", client_id);
+  char client_header[1024];
+  sprintf(client_header, "X-SwiftNav-Client-Id: %s", client);
 
   struct curl_slist *chunk = NULL;
   chunk = curl_slist_append(chunk, "Transfer-Encoding:");
   chunk = curl_slist_append(chunk, "Ntrip-Version: Ntrip/2.0");
-  chunk = curl_slist_append(chunk, client_id_header);
+  chunk = curl_slist_append(chunk, client_header);
 
   char error_buf[CURL_ERROR_SIZE];
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER,       chunk);
