@@ -1,9 +1,9 @@
-[![pings][pings-img]][pings]
-
 # [pings][pings]
 
 Collection of networking ping utilities for monitoring NTRIP. These utilities
 use the same libraries and mechanisms as the Piksis.
+
+[![pings][pings-img]][pings]
 
 ## Build and Installation
 
