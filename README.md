@@ -1,7 +1,7 @@
 # [pings][pings]
 
-Collection of networking ping utilities for monitoring NTRIP. This utility
-uses the same libraries and mechanisms as the Piksis.  An alternate version
+A debug utility for monitoring and inspecting NTRIP. This utility uses the same
+libraries and mechanisms as the Piksi Multi.  An alternate version
 with pre-built binaries is available in the [ntripping](https://github.com/swift-nav/ntripping) project.
 
 [![pings][pings-img]][pings]
