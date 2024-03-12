@@ -31,7 +31,7 @@ The `ntripping` utility has the following usage:
             --height  <height>
             --no-eph  Disable ephemerides on connection (X-No-Ephemerides-On-Connection)
             --verbose Enable curl verbose output
-            --debug   Enable debug output
+            --debug   Enable curl debug output
 Different resources can be requested from different locations. By default, a San
 Francisco latitude, longitude, and height will be used.
 
