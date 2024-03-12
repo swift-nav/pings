@@ -25,11 +25,13 @@ The `ntripping` utility has the following usage:
     Usage: ntripping
 
     Main options
-            --url    <url>
-            --lat    <latitude>
-            --lon    <longitude>
-            --height <height>
-
+            --url     <url>
+            --lat     <latitude>
+            --lon     <longitude>
+            --height  <height>
+            --no-eph  Disable ephemerides on connection (X-No-Ephemerides-On-Connection)
+            --verbose Enable curl verbose output
+            --debug   Enable debug output
 Different resources can be requested from different locations. By default, a San
 Francisco latitude, longitude, and height will be used.
 
