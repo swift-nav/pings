@@ -6,6 +6,7 @@
 #include <time.h>
 #include <curl/curl.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 char *url = "conus.swiftnav.com:2101/VRS";
 char *lat = "37.77101999622968";
@@ -200,7 +201,7 @@ int debug_callback(CURL *handle,
                    char *data,
                    size_t size,
                    void *clientp) {
-  printf("\n-----\nDEBUG - infotype = %s\n-----\n%s-----\n", curl_infotype_string[type], data);
+  fprintf(stderr,"\n-----\nDEBUG - infotype = %s\n-----\n%s", curl_infotype_string[type], data);
   return 0;
 }
 
