@@ -5,6 +5,8 @@
 #include <string.h>
 #include <time.h>
 #include <curl/curl.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 char *url = "conus.swiftnav.com:2101/VRS";
 char *lat = "37.77101999622968";
@@ -12,6 +14,9 @@ char *lon = "-122.40315159140708";
 char *height = "-5.549358852471994";
 char *epoch = "";
 char *client = "00000000-0000-0000-0000-000000000000";
+bool no_eph = false;
+bool verbose = false;
+bool debug = false;
 
 void usage(char *command)
 {
@@ -21,8 +26,11 @@ void usage(char *command)
   puts("\t--lat     <latitude>");
   puts("\t--lon     <longitude>");
   puts("\t--height  <height>");
-  puts("\t--epoch    <epoch>");
+  puts("\t--epoch   <epoch>");
   puts("\t--client  <X-SwiftNav-Client-Id header>");
+  puts("\t--no-eph  Disable ephemerides on connection (X-No-Ephemerides-On-Connection)");
+  puts("\t--verbose Enable curl verbose output");
+  puts("\t--debug   Enable debug output");
 }
 
 int parse_options(int argc, char *argv[])
@@ -34,6 +42,9 @@ int parse_options(int argc, char *argv[])
     OPT_HEIGHT,
     OPT_EPOCH,
     OPT_CLIENT,
+    OPT_NO_EPH,
+    OPT_VERBOSE,
+    OPT_DEBUG,
   };
 
   struct option long_opts[] = {
@@ -43,6 +54,9 @@ int parse_options(int argc, char *argv[])
     {"height",  required_argument, NULL, OPT_HEIGHT},
     {"epoch",   required_argument, NULL, OPT_EPOCH},
     {"client",  required_argument, NULL, OPT_CLIENT},
+    {"no-eph",  no_argument, NULL, OPT_NO_EPH},
+    {"verbose", no_argument, NULL, OPT_VERBOSE},
+    {"debug",   no_argument, NULL, OPT_DEBUG},
     {NULL,      0,                 NULL, 0},
   };
 
@@ -71,6 +85,18 @@ int parse_options(int argc, char *argv[])
       break;
       case OPT_CLIENT: {
         client = optarg;
+      }
+      break;
+      case OPT_NO_EPH: {
+        no_eph = true;
+      }
+      break;
+      case OPT_VERBOSE: {
+        verbose = true;
+      }
+      break;
+      case OPT_DEBUG: {
+        debug = true;
       }
       break;
       default: {
@@ -159,6 +185,26 @@ int progress(void *data, curl_off_t dltot, curl_off_t dlnow, curl_off_t ultot, c
   return 0;
 }
 
+static const char *curl_infotype_string[] = {
+  "CURLINFO_TEXT",         /* 0 */
+  "CURLINFO_HEADER_IN",    /* 1 */
+  "CURLINFO_HEADER_OUT",   /* 2 */
+  "CURLINFO_DATA_IN",      /* 3 */
+  "CURLINFO_DATA_OUT",     /* 4 */
+  "CURLINFO_SSL_DATA_IN",  /* 5 */
+  "CURLINFO_SSL_DATA_OUT", /* 6 */
+  "CURLINFO_END"
+};
+
+int debug_callback(CURL *handle,
+                   curl_infotype type,
+                   char *data,
+                   size_t size,
+                   void *clientp) {
+  fprintf(stderr,"\n-----\nDEBUG - infotype = %s\n-----\n%s", curl_infotype_string[type], data);
+  return 0;
+}
+
 int request(void)
 {
   CURLcode code = curl_global_init(CURL_GLOBAL_ALL);
@@ -180,6 +226,9 @@ int request(void)
   chunk = curl_slist_append(chunk, "Transfer-Encoding:");
   chunk = curl_slist_append(chunk, "Ntrip-Version: Ntrip/2.0");
   chunk = curl_slist_append(chunk, client_header);
+  if (no_eph) {
+    chunk = curl_slist_append(chunk, "X-No-Ephemerides-On-Connection: True");
+  }
 
   char error_buf[CURL_ERROR_SIZE];
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER,       chunk);
@@ -192,6 +241,14 @@ int request(void)
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS,       0L);
   curl_easy_setopt(curl, CURLOPT_PUT,              1L);
   curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST,    "GET");
+
+  if (verbose || debug) {
+   curl_easy_setopt(curl, CURLOPT_VERBOSE,          1L);
+  }
+  if (debug) {
+   curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION,    debug_callback);
+  }
+
 #if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR >= 7 && LIBCURL_VERSION_MINOR >= 64)
   curl_easy_setopt(curl, CURLOPT_HTTP09_ALLOWED,   1L);
 #endif
